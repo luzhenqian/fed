@@ -11,23 +11,70 @@
  * ./auto-pull.mjs
  */
 
-// TODO: 比对 hash 再进行 pull
-// 获取远程仓库某分支的 hash： git ls-remote url branch HEAD
-// 获取本地仓库某分支的 hash： git rev-parse branch HEAD
-// const remoteUrl = 'ssh://git@gits.boluome.com:1111/OTOSaaS/oto_saas_web_app_ctrip_train.git'
-// const cmd  = 'git ls-remote ssh://git@gits.boluome.com:1111/OTOSaaS/oto_saas_web_app_ctrip_train.git a HEAD'
-const remoteBranch = 'develop'
-const cmd = 'git ls-remote ssh://git@gits.boluome.com:1111/OTOSaaS/oto_saas_web_app_ctrip_train.git develop HEAD'
- (function run() {
-  // const remoteCurrentHash = $`git ls-remote ${remoteUrl} ${remoteBranch} HEAD`
-  $`${cmd}`
-    .then(data=> {
-      console.log('data: ', data)
-    })
-  // const remoteCurrentHash = $`git ls-remote ${remoteUrl} HEAD`
-  // $`git pull`.then(run);
-})();
+ const config = {
+  url: "ssh://git@gits.boluome.com:1111/OTOSaaS/oto_saas_web_app_rebuild_test_publish.git",
+  branch: "develop",
+  interval: 5000,
+};
 
-[receive]
+/**
+ * 获取远程仓库的 hash
+ * @param {string} url remote url
+ * @param {string} branch
+ * @returns
+ */
+async function getRemoteHash(url, branch) {
+  return (await $`git ls-remote ${url} ${branch} HEAD`).stdout;
+}
 
-        denyCurrentBranch = ignore
+/**
+ * 获取本地仓库的 hash
+ * @param {string} branch
+ * @returns
+ */
+async function getLocalHash(branch) {
+  return (await $`git rev-parse ${branch} HEAD`).stdout.split('\n')[0];
+}
+
+async function checkConfig() {
+  try {
+    await $`git config receive.denyCurrentBranch`;
+  } catch (err) {
+    if (err.exitCode === 1) {
+      await $`git config receive.denyCurrentBranch ignore`;
+    }
+  }
+}
+
+function wait() {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, config.interval);
+  });
+}
+
+async function pull() {
+  await $`git pull`;
+}
+
+async function autoPull() {
+  while (true) {
+    const remoteHashs = (await getRemoteHash(config.url, config.branch));
+    const localHash = (await getLocalHash(config.branch));
+    if (remoteHashs.includes(localHash)) {
+      await wait();
+    } else {
+      await pull();
+    }
+  }
+}
+
+async function run() {
+  await checkConfig();
+  await autoPull();
+}
+
+try {
+  await run();
+} catch (e) {
+  await run();
+}

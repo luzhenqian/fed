@@ -1,10 +1,13 @@
 #! /usr/bin/env zx
 
-$`cat ../../.git/config`.then(data => {
-  const matchResult = data.stdout.match(`denyCurrentBranch = ignore`)
-  if(matchResult === null) {
-    $`echo "\n[receive] \n        denyCurrentBranch = ignore" >> ../../.git/config`.then(data => {
-      console.log('data: ', data)
-    })
+async function checkConfig () {
+  try {
+    await $`git config receive.denyCurrentBranch`
+  } catch (err) {
+    if(err.exitCode === 1) {
+      await $`git config receive.denyCurrentBranch ignore`
+    }
   }
-})
+}
+
+await checkConfig()
