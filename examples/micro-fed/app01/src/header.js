@@ -4,5 +4,5 @@ export function render(el) {
     <span>搜索</span>
     <span>消息</span>
     <span>我的</span>
-  </div>`
+  </div>`;
 }
