@@ -1,0 +1,11 @@
+h1, span {
+  color: #606060;
+
+  padding: 12px;
+  margin: 12px;
+
+  width: 200px;
+  height: 200px;
+
+  display: inline-block;
+}

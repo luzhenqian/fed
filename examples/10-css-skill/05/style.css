@@ -1,0 +1,9 @@
+p::selection {
+  background: #010101;
+  color: #a3a9a4;
+}
+
+p::first-letter {
+  font-size: 2rem;
+  font-weight: bold;
+}

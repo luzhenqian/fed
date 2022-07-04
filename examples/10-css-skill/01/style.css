@@ -1,0 +1,24 @@
+div {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  background: #010101;
+  border: 1px solid transparent;
+  color: #A3A9A4;
+  padding: 20px 40px;
+  animation: fade 1s ease forwards;
+}
+
+@keyframes fade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
