@@ -1,0 +1,12 @@
+a {
+  display: inline-block;
+  height: 40px;
+}
+
+p {
+  min-height: 100vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
