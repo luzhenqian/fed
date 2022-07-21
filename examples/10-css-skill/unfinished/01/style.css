@@ -10,15 +10,4 @@ button {
   border: 1px solid transparent;
   color: #A3A9A4;
   padding: 20px 40px;
-  animation: fade 2s ease forwards;
-}
-
-@keyframes fade {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-    pointer-events: none;
-  }
 }
